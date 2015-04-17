@@ -3,8 +3,12 @@
 - mkdir -p draft/ if not exxist 
 - is draft button - to publish button - upload button
 - make skel in draft
+
+
 interface example  : 
 
+|
+|  |new article| |open draft| |edit published post|
 | 
 | Title : 
 | Date : 
@@ -13,14 +17,14 @@ interface example  :
 | slug : title.lower() | sed s/[\'[:space:]]\+/-/g
 | summary : 
 | Body : -----------------------------------
-|        |                                 |
-|        |                                 |
-|        |                                 |
-|        |                                 |
-|        |                                 |
-|        |                                 |
-|        |                                 |
-|        |                                 |
+|        |   M       P                     |
+|        |    A       O                    |
+|        |     R       W                   |
+|        |      K       A                  |
+|        |       D       H                 |
+|        |        O                        |
+|        |         W                       |
+|        |          N                      |
 |        |                                 |
 |        |                                 |
 |        |                                 |
