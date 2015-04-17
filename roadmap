@@ -1,0 +1,34 @@
+- choose path to pelican project
+- try import polican except : what venv to use ? / quit
+- mkdir -p draft/ if not exxist 
+- is draft button - to publish button - upload button
+- make skel in draft
+interface example  : 
+
+| 
+| Title : 
+| Date : 
+| category :
+| Tags : 
+| slug : title.lower() | sed s/[\'[:space:]]\+/-/g
+| summary : 
+| Body : -----------------------------------
+|        |                                 |
+|        |                                 |
+|        |                                 |
+|        |                                 |
+|        |                                 |
+|        |                                 |
+|        |                                 |
+|        |                                 |
+|        |                                 |
+|        |                                 |
+|        |                                 |
+|        ----------------------------------
+|
+|           |Draft(1)| |to publish(2)| |upload(3)|
+
+(1) : cp to $PELICAN_HOME/draft
+(2) : cp to $PELICAN_HOME/content
+(3) : make publish ssh_upload
+
