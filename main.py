@@ -27,7 +27,23 @@ class MainApplication(tk.Frame):
     def open_draft(self):
         if self.path :
             self.draft = tkFileDialog.askopenfilename(initialdir=self.draft_directory)
-
+            if self.draft:
+                self.new_article()
+            with open(self.draft,'r') as d:
+                for line in d:
+                    if "Title:" in line:
+                        self.title_entry.insert(0, " ".join(line.split(":")[1:]))
+                    elif "Date:" in line:
+                        self.date_entry.insert(0, " ".join(line.split(":")[1:]))
+                    elif "Category:" in line:
+                        self.category_entry.delete(0,tk.END)
+                        self.category_entry.insert(0," ".join(line.split(":")[1:]))
+                    elif "Tags:" in line:
+                        self.tags_entry.insert(0," ".join(line.split(":")[1:]))
+                    elif "Summary:" in line:
+                        self.summary_entry.insert(0," ".join(line.split(":")[1:]))
+                    else:
+                        self.body_entry.insert(tk.END,line)
             print self.draft
         else :
             print "set pelican home first"
