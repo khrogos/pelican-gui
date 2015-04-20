@@ -4,14 +4,25 @@
 import Tkinter as tk
 import ScrolledText
 import tkFileDialog
+import os
 
 class MainApplication(tk.Frame):
-    # TODO method:
-
     path=None
+    draft_directory = None
+    publish_directory = None
 
     def choose_pelican_path(self):
         self.path = tkFileDialog.askdirectory()
+        self.publish_directory = "/".join([self.path, "content"])
+        self.draft_directory = "/".join([self.path, "draft"])
+        if os.path.isdir(self.path) :
+            if not os.path.exists("/".join([self.path, "pelicanconf.py"])):
+                # TODO : try to find a ... cleaner way to do that
+                print "Not a pelican folder ! "
+                exit(1)
+            if not os.path.isdir(self.draft_directory):
+                # create draft folder
+                os.makedirs(self.draft_directory)
 
     def new_article(self):
         self.title_entry.delete(0, tk.END)
