@@ -3,8 +3,16 @@
 
 import Tkinter as tk
 import ScrolledText
+import tkFileDialog
 
 class MainApplication(tk.Frame):
+    # TODO method:
+    # save pelicanpath
+    path=None
+
+    def choose_pelican_path(self):
+        self.path = tkFileDialog.askdirectory()
+        print(self.path)
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -15,10 +23,10 @@ class MainApplication(tk.Frame):
         self.grid(row=0, column=0, sticky=tk.N+tk.S+tk.E+tk.W)
         # menu configuration
         self.menu_bar = tk.Menu(self)
-        self.menu_bar.add_command(label="set pelican home", command=self.flush)
+        self.menu_bar.add_command(label="set pelican home", command=self.choose_pelican_path)
         self.menu_bar.add_command(label="Quit", command=self.quit)
         self.parent.config(menu=self.menu_bar)
-        
+
         ## declare elements
         # buttons
         self.new_article_button = tk.Button(self, text="new article", command=self.flush)
@@ -34,7 +42,7 @@ class MainApplication(tk.Frame):
         self.tags_label = tk.Label(self, text="Tags")
         self.summary_label = tk.Label(self, text="summary")
         self.body_label = tk.Label(self, text="Body")
-        
+
         self.title_entry = tk.Entry(self)
         self.date_entry = tk.Entry(self)
         self.category_entry = tk.Entry(self)
