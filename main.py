@@ -8,10 +8,17 @@ class MainApplication(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
+        parent.resizable(width=False, height=True)
         tk.Grid.rowconfigure(self.parent, 0, weight=1)
         tk.Grid.columnconfigure(self.parent, 0, weight=1)
         # <create the rest of your GUI here>
         self.grid(row=0, column=0, sticky=tk.N+tk.S+tk.E+tk.W)
+        # menu configuration
+        self.menu_bar = tk.Menu(self)
+        self.menu_bar.add_command(label="set pelican home", command=self.flush)
+        self.menu_bar.add_command(label="Quit", command=self.quit)
+        self.parent.config(menu=self.menu_bar)
+        
         ## declare elements
         # buttons
         self.new_article_button = tk.Button(self, text="new article", command=self.flush)
@@ -35,10 +42,10 @@ class MainApplication(tk.Frame):
         self.summary_entry = tk.Entry(self)
         self.body_entry = ScrolledText.ScrolledText(self,wrap=tk.WORD)
 
-        ## position elements
-        self.new_article_button.grid(column=0, row=0, sticky='NEWS')
-        self.open_draft_button.grid(column=1, row=0, sticky='NEWS')
-        self.open_published_button.grid(column=2, row=0, sticky='NEWS')
+        ## position elements on the grid
+        self.new_article_button.grid(column=0, row=0, sticky='W', pady=(20,20))
+        self.open_draft_button.grid(column=1, row=0 , pady=(20,20))
+        self.open_published_button.grid(column=2, row=0, sticky='E', pady=(20,20))
         self.title_label.grid(column=0, row=1, sticky='W')
         self.date_label.grid(column=0, row=2, sticky='W')
         self.category_label.grid(column=0, row=3, sticky='W')
@@ -51,13 +58,15 @@ class MainApplication(tk.Frame):
         self.category_entry.grid(column=1, row=3, sticky='WE')
         self.tags_entry.grid(column=1, row=4, sticky='WE')
         self.summary_entry.grid(column=1, row=5, sticky='WE')
-        self.body_entry.grid(column=1, row=6, columnspan=2, sticky='WE')
+        self.body_entry.grid(column=1, row=6, columnspan=2, sticky='NSWE', padx=(0,50), pady=(0,50))
 
-        self.save_draft_button.grid(column=0, row=7, sticky=tk.W)
-        self.save_published_button.grid(column=1, row=7)
-        self.upload_button.grid(column=2, row=7)
+        self.save_draft_button.grid(column=0, row=7, sticky=tk.W, pady=(20,20))
+        self.save_published_button.grid(column=1, row=7, pady=(20,20))
+        self.upload_button.grid(column=2, row=7, pady=(20,20))
 
+        # manage horizontal and vertical resizing
         self.columnconfigure(1, weight=3)
+        self.rowconfigure(6, weight=3)
 
         self.update()
 
