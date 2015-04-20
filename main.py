@@ -24,6 +24,14 @@ class MainApplication(tk.Frame):
                 # create draft folder
                 os.makedirs(self.draft_directory)
 
+    def open_draft(self):
+        if self.path :
+            self.draft = tkFileDialog.askopenfilename(initialdir=self.draft_directory)
+
+            print self.draft
+        else :
+            print "set pelican home first"
+
     def new_article(self):
         self.title_entry.delete(0, tk.END)
         self.date_entry.delete(0, tk.END)
@@ -31,6 +39,7 @@ class MainApplication(tk.Frame):
         self.tags_entry.delete(0, tk.END)
         self.summary_entry.delete(0, tk.END)
         self.body_entry.delete('0.0', tk.END)
+
 
 
 
@@ -51,7 +60,7 @@ class MainApplication(tk.Frame):
         ## declare elements
         # buttons
         self.new_article_button = tk.Button(self, text="new article", command=self.new_article)
-        self.open_draft_button = tk.Button(self, text="open Draft", command=self.flush)
+        self.open_draft_button = tk.Button(self, text="open Draft", command=self.open_draft)
         self.open_published_button = tk.Button(self, text="Open published article", command=self.flush)
         self.save_draft_button = tk.Button(self, text="Save to draft", command=self.flush )
         self.save_published_button = tk.Button(self, text="Ready to publish", command=self.flush )
