@@ -7,12 +7,22 @@ import tkFileDialog
 
 class MainApplication(tk.Frame):
     # TODO method:
-    # save pelicanpath
+
     path=None
 
     def choose_pelican_path(self):
         self.path = tkFileDialog.askdirectory()
-        print(self.path)
+
+    def new_article(self):
+        self.title_entry.delete(0, tk.END)
+        self.date_entry.delete(0, tk.END)
+        self.category_entry.delete(0, tk.END)
+        self.tags_entry.delete(0, tk.END)
+        self.summary_entry.delete(0, tk.END)
+        self.body_entry.delete('0.0', tk.END)
+
+
+
     def __init__(self, parent, *args, **kwargs):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -29,7 +39,7 @@ class MainApplication(tk.Frame):
 
         ## declare elements
         # buttons
-        self.new_article_button = tk.Button(self, text="new article", command=self.flush)
+        self.new_article_button = tk.Button(self, text="new article", command=self.new_article)
         self.open_draft_button = tk.Button(self, text="open Draft", command=self.flush)
         self.open_published_button = tk.Button(self, text="Open published article", command=self.flush)
         self.save_draft_button = tk.Button(self, text="Save to draft", command=self.flush )
