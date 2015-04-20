@@ -8,6 +8,10 @@ class MainApplication(tk.Frame):
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         # <create the rest of your GUI here>
+        new_article_button = tk.Button(self, text="new article", command=self.flush)
+
+    def flush(self):
+        pass
 
 if __name__ == "__main__":
     root = tk.Tk()
