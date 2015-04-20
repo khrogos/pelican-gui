@@ -2,6 +2,7 @@
 #coding: utf-8
 
 import Tkinter as tk
+import ScrolledText
 
 class MainApplication(tk.Frame):
     def __init__(self, parent, *args, **kwargs):
@@ -32,7 +33,7 @@ class MainApplication(tk.Frame):
         self.category_entry = tk.Entry(self)
         self.tags_entry = tk.Entry(self)
         self.summary_entry = tk.Entry(self)
-        self.body_entry = tk.Entry(self)
+        self.body_entry = ScrolledText.ScrolledText(self,wrap=tk.WORD)
 
         ## position elements
         self.new_article_button.grid(column=0, row=0, sticky='NEWS')
@@ -45,16 +46,18 @@ class MainApplication(tk.Frame):
         self.summary_label.grid(column=0, row=5, sticky='W')
         self.body_label.grid(column=0, row=6, sticky='W')
 
-        self.title_entry.grid(column=1, row=1, columnspan=2, sticky='E')
-        self.date_entry.grid(column=1, row=2, columnspan=2, sticky='E')
-        self.category_entry.grid(column=1, row=3, columnspan=2, sticky='E')
-        self.tags_entry.grid(column=1, row=4, columnspan=2, sticky='E')
-        self.summary_entry.grid(column=1, row=5, columnspan=2, sticky='E')
-        self.body_entry.grid(column=1, row=6, columnspan=2, sticky='E')
+        self.title_entry.grid(column=1, row=1, sticky='WE')
+        self.date_entry.grid(column=1, row=2, sticky='WE')
+        self.category_entry.grid(column=1, row=3, sticky='WE')
+        self.tags_entry.grid(column=1, row=4, sticky='WE')
+        self.summary_entry.grid(column=1, row=5, sticky='WE')
+        self.body_entry.grid(column=1, row=6, columnspan=2, sticky='WE')
 
         self.save_draft_button.grid(column=0, row=7, sticky=tk.W)
         self.save_published_button.grid(column=1, row=7)
         self.upload_button.grid(column=2, row=7)
+
+        self.columnconfigure(1, weight=3)
 
         self.update()
 
