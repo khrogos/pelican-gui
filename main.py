@@ -6,7 +6,7 @@ import ScrolledText
 import tkFileDialog
 import os
 import getpass
-
+import subprocess
 
 class MainApplication(tk.Frame):
     path = None
@@ -111,8 +111,7 @@ class MainApplication(tk.Frame):
         f = tkFileDialog.asksaveasfile(mode='w', defaultextension=".md", initialdir=path)
         if f is None:
             return
-        text_to_save = u"""
-Title: {0}
+        text_to_save = u"""Title: {0}
 Date: {1}
 Category: {2}
 Tags: {3}
@@ -131,6 +130,9 @@ Summary: {6}
     def save_published(self):
         self.save_file(self.publish_directory)
 
+    def go_live(self):
+        os.chdir(self.path)
+        subprocess.call(["make", "publish", "ssh_upload"])
 
     def __init__(self, parent, *args, **kwargs):
         """
@@ -156,7 +158,7 @@ Summary: {6}
         self.open_published_button = tk.Button(self, text="Open published article", command=self.open_published)
         self.save_draft_button = tk.Button(self, text="Save to draft", command=self.save_draft )
         self.save_published_button = tk.Button(self, text="Ready to publish", command=self.save_published )
-        self.upload_button = tk.Button(self, text="Go online", command=self.flush )
+        self.upload_button = tk.Button(self, text="Go online", command=self.go_live )
         # labels and entrys
         self.title_label = tk.Label(self, text="Title")
         self.date_label = tk.Label(self, text="Date")
