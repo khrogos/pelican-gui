@@ -1,12 +1,19 @@
 #!/usr/bin/python
 # coding: utf-8
 
+# TODO :
+# delete draft if saved as published
+# use pelicanconf to more flexible paramters
+# config file with default pelican blog
+#
+
 import Tkinter as tk
 import ScrolledText
 import tkFileDialog
 import os
 import getpass
 import subprocess
+import ttk
 
 class MainApplication(tk.Frame):
     path = None
@@ -138,6 +145,8 @@ Summary: {6}
         """
         Creation of the GUI is done here
         """
+        s=ttk.Style()
+        s.theme_use('classic')
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         parent.resizable(width=False, height=True)
@@ -192,9 +201,9 @@ Summary: {6}
         self.summary_entry.grid(column=1, row=5, sticky='WE')
         self.body_entry.grid(column=1, row=6, columnspan=2, sticky='NSWE', padx=(0,50), pady=(0,50))
 
-        self.save_draft_button.grid(column=0, row=7, sticky=tk.W, pady=(20,20))
+        self.save_draft_button.grid(column=0, row=7, sticky=tk.W, pady=(20,20), padx=(20,0))
         self.save_published_button.grid(column=1, row=7, pady=(20,20))
-        self.upload_button.grid(column=2, row=7, pady=(20,20))
+        self.upload_button.grid(column=2, row=7, pady=(20,20), padx=(0,20))
 
         # manage horizontal and vertical resizing
         self.columnconfigure(1, weight=3)

@@ -1,9 +1,4 @@
-- choose path to pelican project DONE
 - try import polican except : what venv to use ? / quit
-- mkdir -p draft/ if not exxist DONE 
-- is draft button - to publish button - upload button DONE
-- make skel in draft 
-
 
 interface example  : 
 
@@ -32,7 +27,5 @@ interface example  :
 |
 |           |Draft(1)| |to publish(2)| |upload(3)|
 
-(1) : cp to $PELICAN_HOME/draft
-(2) : cp to $PELICAN_HOME/content
-(3) : make publish ssh_upload
+(2) : cp to $PELICAN_HOME/content 
 
