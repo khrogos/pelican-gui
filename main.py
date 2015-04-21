@@ -1,29 +1,32 @@
-#!/usr/local/bin/python3.4
-#coding: utf-8
+#!/usr/bin/python
+# coding: utf-8
 
 import Tkinter as tk
 import ScrolledText
 import tkFileDialog
 import os
+import getpass
+
 
 class MainApplication(tk.Frame):
-    path=None
+    path = None
     draft_directory = None
     publish_directory = None
 
     def choose_pelican_path(self):
         """
         menu option to set the pelican blog folder
-        check if this is a pelican folder by trying to find the pelicanconf.py file
+        check if this is a pelican folder by trying to find the pelicanconf.py
+        file.
         create a draft folder if not existe
 
-        TODO : 
+        TODO :
             use a config file for persistent saving
         """
         self.path = tkFileDialog.askdirectory()
         self.publish_directory = "/".join([self.path, "content"])
         self.draft_directory = "/".join([self.path, "draft"])
-        if os.path.isdir(self.path) :
+        if os.path.isdir(self.path):
             if not os.path.exists("/".join([self.path, "pelicanconf.py"])):
                 # TODO : try to find a ... cleaner way to do that
                 print "Not a pelican folder ! "
@@ -34,25 +37,26 @@ class MainApplication(tk.Frame):
 
     def open_dir(self, path):
         """
-        Open a file in path and parse the file to fill all fields of the interface
+        Open a file in path and parse the file to fill
+        all fields of the interface
         """
-        if self.path :
+        if path:
             self.draft = tkFileDialog.askopenfilename(initialdir=path)
             if self.draft:
-                self.new_article() # flush the fields before adding values
-                with open(self.draft,'r') as d:
+                self.new_article()  # flush the fields before adding values
+                with open(self.draft, 'r') as d:
                     for line in d:
                         if "Title:" in line:
-                            self.title_entry.insert(0, " ".join(line.split(":")[1:]))
+                            self.title_entry.insert(0, " ".join(line.split(":")[1:]).strip())
                         elif "Date:" in line:
-                            self.date_entry.insert(0, " ".join(line.split(":")[1:]))
+                            self.date_entry.insert(0, " ".join(line.split(":")[1:]).strip())
                         elif "Category:" in line:
                             self.category_entry.delete(0,tk.END)
-                            self.category_entry.insert(0," ".join(line.split(":")[1:]))
+                            self.category_entry.insert(0," ".join(line.split(":")[1:]).strip())
                         elif "Tags:" in line:
-                            self.tags_entry.insert(0," ".join(line.split(":")[1:]))
+                            self.tags_entry.insert(0," ".join(line.split(":")[1:]).strip())
                         elif "Summary:" in line:
-                            self.summary_entry.insert(0," ".join(line.split(":")[1:]))
+                            self.summary_entry.insert(0," ".join(line.split(":")[1:]).strip())
                         elif "Slug:" in line or "Author:" in line:
                             continue
                         else:
@@ -84,7 +88,48 @@ class MainApplication(tk.Frame):
         self.summary_entry.delete(0, tk.END)
         self.body_entry.delete('0.0', tk.END)
 
+    def clean_title(self, title):
+        """
+        Prepare title for slug
+        """
+        return title.strip().replace(" ", "-").replace("'", "-").replace(":", "-").lower()
 
+
+    def save_file(self, path):
+        """
+        retrieve informations from the GUI to generate the markdown document
+        and save it
+        """
+        title = self.title_entry.get()
+        date = self.date_entry.get()
+        categories = self.category_entry.get()
+        tags = self.tags_entry.get()
+        summary = self.summary_entry.get()
+        body = self.body_entry.get(1.0, tk.END).strip()
+        author = getpass.getuser()
+        slug = self.clean_title(title)
+        f = tkFileDialog.asksaveasfile(mode='w', defaultextension=".md", initialdir=path)
+        if f is None:
+            return
+        text_to_save = u"""
+Title: {0}
+Date: {1}
+Category: {2}
+Tags: {3}
+Author: {4}
+Slug: {5}
+Summary: {6}
+{7}
+""".format(title, date, categories, tags, author, slug, summary, body)
+        f.write(text_to_save)
+        f.close()
+
+
+    def save_draft(self):
+        self.save_file(self.draft_directory)
+
+    def save_published(self):
+        self.save_file(self.publish_directory)
 
 
     def __init__(self, parent, *args, **kwargs):
@@ -96,7 +141,7 @@ class MainApplication(tk.Frame):
         parent.resizable(width=False, height=True)
         tk.Grid.rowconfigure(self.parent, 0, weight=1)
         tk.Grid.columnconfigure(self.parent, 0, weight=1)
-        # Use grid 
+        # Use grid
         self.grid(row=0, column=0, sticky=tk.N+tk.S+tk.E+tk.W)
         # menu configuration
         self.menu_bar = tk.Menu(self)
@@ -109,8 +154,8 @@ class MainApplication(tk.Frame):
         self.new_article_button = tk.Button(self, text="new article", command=self.new_article)
         self.open_draft_button = tk.Button(self, text="open Draft", command=self.open_draft)
         self.open_published_button = tk.Button(self, text="Open published article", command=self.open_published)
-        self.save_draft_button = tk.Button(self, text="Save to draft", command=self.flush )
-        self.save_published_button = tk.Button(self, text="Ready to publish", command=self.flush )
+        self.save_draft_button = tk.Button(self, text="Save to draft", command=self.save_draft )
+        self.save_published_button = tk.Button(self, text="Ready to publish", command=self.save_published )
         self.upload_button = tk.Button(self, text="Go online", command=self.flush )
         # labels and entrys
         self.title_label = tk.Label(self, text="Title")
