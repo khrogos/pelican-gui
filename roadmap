@@ -1,8 +1,8 @@
-- choose path to pelican project
+- choose path to pelican project DONE
 - try import polican except : what venv to use ? / quit
-- mkdir -p draft/ if not exxist 
-- is draft button - to publish button - upload button
-- make skel in draft
+- mkdir -p draft/ if not exxist DONE 
+- is draft button - to publish button - upload button DONE
+- make skel in draft 
 
 
 interface example  : 
