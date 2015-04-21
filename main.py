@@ -24,9 +24,9 @@ class MainApplication(tk.Frame):
                 # create draft folder
                 os.makedirs(self.draft_directory)
 
-    def open_draft(self):
+    def open_dir(self, path):
         if self.path :
-            self.draft = tkFileDialog.askopenfilename(initialdir=self.draft_directory)
+            self.draft = tkFileDialog.askopenfilename(initialdir=path)
             if self.draft:
                 self.new_article()
             with open(self.draft,'r') as d:
@@ -42,11 +42,19 @@ class MainApplication(tk.Frame):
                         self.tags_entry.insert(0," ".join(line.split(":")[1:]))
                     elif "Summary:" in line:
                         self.summary_entry.insert(0," ".join(line.split(":")[1:]))
+                    elif "Slug:" in line or "Author:" in line:
+                        continue
                     else:
                         self.body_entry.insert(tk.END,line)
             print self.draft
         else :
             print "set pelican home first"
+
+    def open_draft(self):
+        self.open_dir(self.draft_directory)
+
+    def open_published(self):
+        self.open_dir(self.publish_directory)
 
     def new_article(self):
         self.title_entry.delete(0, tk.END)
@@ -77,7 +85,7 @@ class MainApplication(tk.Frame):
         # buttons
         self.new_article_button = tk.Button(self, text="new article", command=self.new_article)
         self.open_draft_button = tk.Button(self, text="open Draft", command=self.open_draft)
-        self.open_published_button = tk.Button(self, text="Open published article", command=self.flush)
+        self.open_published_button = tk.Button(self, text="Open published article", command=self.open_published)
         self.save_draft_button = tk.Button(self, text="Save to draft", command=self.flush )
         self.save_published_button = tk.Button(self, text="Ready to publish", command=self.flush )
         self.upload_button = tk.Button(self, text="Go online", command=self.flush )
@@ -97,9 +105,9 @@ class MainApplication(tk.Frame):
         self.body_entry = ScrolledText.ScrolledText(self,wrap=tk.WORD)
 
         ## position elements on the grid
-        self.new_article_button.grid(column=0, row=0, sticky='W', pady=(20,20))
+        self.new_article_button.grid(column=0, row=0, sticky='W', pady=(20,20), padx=(20,0))
         self.open_draft_button.grid(column=1, row=0 , pady=(20,20))
-        self.open_published_button.grid(column=2, row=0, sticky='E', pady=(20,20))
+        self.open_published_button.grid(column=2, row=0, sticky='E', pady=(20,20), padx=(0,20))
         self.title_label.grid(column=0, row=1, sticky='W')
         self.date_label.grid(column=0, row=2, sticky='W')
         self.category_label.grid(column=0, row=3, sticky='W')
