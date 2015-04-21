@@ -12,6 +12,14 @@ class MainApplication(tk.Frame):
     publish_directory = None
 
     def choose_pelican_path(self):
+        """
+        menu option to set the pelican blog folder
+        check if this is a pelican folder by trying to find the pelicanconf.py file
+        create a draft folder if not existe
+
+        TODO : 
+            use a config file for persistent saving
+        """
         self.path = tkFileDialog.askdirectory()
         self.publish_directory = "/".join([self.path, "content"])
         self.draft_directory = "/".join([self.path, "draft"])
@@ -25,38 +33,50 @@ class MainApplication(tk.Frame):
                 os.makedirs(self.draft_directory)
 
     def open_dir(self, path):
+        """
+        Open a file in path and parse the file to fill all fields of the interface
+        """
         if self.path :
             self.draft = tkFileDialog.askopenfilename(initialdir=path)
             if self.draft:
-                self.new_article()
-            with open(self.draft,'r') as d:
-                for line in d:
-                    if "Title:" in line:
-                        self.title_entry.insert(0, " ".join(line.split(":")[1:]))
-                    elif "Date:" in line:
-                        self.date_entry.insert(0, " ".join(line.split(":")[1:]))
-                    elif "Category:" in line:
-                        self.category_entry.delete(0,tk.END)
-                        self.category_entry.insert(0," ".join(line.split(":")[1:]))
-                    elif "Tags:" in line:
-                        self.tags_entry.insert(0," ".join(line.split(":")[1:]))
-                    elif "Summary:" in line:
-                        self.summary_entry.insert(0," ".join(line.split(":")[1:]))
-                    elif "Slug:" in line or "Author:" in line:
-                        continue
-                    else:
-                        self.body_entry.insert(tk.END,line)
-            print self.draft
+                self.new_article() # flush the fields before adding values
+                with open(self.draft,'r') as d:
+                    for line in d:
+                        if "Title:" in line:
+                            self.title_entry.insert(0, " ".join(line.split(":")[1:]))
+                        elif "Date:" in line:
+                            self.date_entry.insert(0, " ".join(line.split(":")[1:]))
+                        elif "Category:" in line:
+                            self.category_entry.delete(0,tk.END)
+                            self.category_entry.insert(0," ".join(line.split(":")[1:]))
+                        elif "Tags:" in line:
+                            self.tags_entry.insert(0," ".join(line.split(":")[1:]))
+                        elif "Summary:" in line:
+                            self.summary_entry.insert(0," ".join(line.split(":")[1:]))
+                        elif "Slug:" in line or "Author:" in line:
+                            continue
+                        else:
+                            self.body_entry.insert(tk.END,line)
+                print self.draft
         else :
             print "set pelican home first"
 
     def open_draft(self):
+        """
+        open a file in $PELICAN_HOME/draft/ folder
+        """
         self.open_dir(self.draft_directory)
 
     def open_published(self):
+        """
+        open a file in $PELICAN_HOME/content/ folder
+        """
         self.open_dir(self.publish_directory)
 
     def new_article(self):
+        """
+        flush all fields in interface
+        """
         self.title_entry.delete(0, tk.END)
         self.date_entry.delete(0, tk.END)
         self.category_entry.delete(0, tk.END)
@@ -68,12 +88,15 @@ class MainApplication(tk.Frame):
 
 
     def __init__(self, parent, *args, **kwargs):
+        """
+        Creation of the GUI is done here
+        """
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
         parent.resizable(width=False, height=True)
         tk.Grid.rowconfigure(self.parent, 0, weight=1)
         tk.Grid.columnconfigure(self.parent, 0, weight=1)
-        # <create the rest of your GUI here>
+        # Use grid 
         self.grid(row=0, column=0, sticky=tk.N+tk.S+tk.E+tk.W)
         # menu configuration
         self.menu_bar = tk.Menu(self)
@@ -135,6 +158,9 @@ class MainApplication(tk.Frame):
 
 
     def flush(self):
+        """
+        for test only
+        """
         pass
 
 if __name__ == "__main__":
