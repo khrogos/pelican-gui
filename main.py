@@ -129,13 +129,20 @@ Summary: {6}
 """.format(title, date, categories, tags, author, slug, summary, body)
         f.write(text_to_save)
         f.close()
+        return f
 
 
     def save_draft(self):
         self.save_file(self.draft_directory)
 
     def save_published(self):
-        self.save_file(self.publish_directory)
+        f = self.save_file(self.publish_directory)
+        pub_file = f.name
+        # delete draft if needs to be published
+        if os.path.exists(pub_file):
+            draft_file = pub_file.replace('content', 'draft')
+            os.rename(draft_file, pub_file)
+
 
     def go_live(self):
         os.chdir(self.path)
