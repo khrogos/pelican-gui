@@ -133,7 +133,12 @@ Summary: {6}
 
 
     def save_draft(self):
-        self.save_file(self.draft_directory)
+        f= self.save_file(self.draft_directory)
+        draft_file = f.name
+        if os.path.exists(draft_file):
+            pub_file = draft_file.replace('draft', 'content')
+            os.rename(pub_file, draft_file)
+
 
     def save_published(self):
         f = self.save_file(self.publish_directory)
