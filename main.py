@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # coding: utf-8
 
-# TODO :
+# TODO :
 # delete draft if saved as published
 # use pelicanconf to more flexible paramters
 # config file with default pelican blog
@@ -14,6 +14,7 @@ import os
 import getpass
 import subprocess
 import ttk
+
 
 class MainApplication(tk.Frame):
     path = None
@@ -54,22 +55,27 @@ class MainApplication(tk.Frame):
                 with open(self.draft, 'r') as d:
                     for line in d:
                         if "Title:" in line:
-                            self.title_entry.insert(0, " ".join(line.split(":")[1:]).strip())
+                            to_insert = " ".join(line.split(":")[1:]).strip()
+                            self.title_entry.insert(0, to_insert)
                         elif "Date:" in line:
-                            self.date_entry.insert(0, " ".join(line.split(":")[1:]).strip())
+                            to_insert = " ".join(line.split(":")[1:]).strip()
+                            self.date_entry.insert(0, to_insert)
                         elif "Category:" in line:
-                            self.category_entry.delete(0,tk.END)
-                            self.category_entry.insert(0," ".join(line.split(":")[1:]).strip())
+                            to_insert = " ".join(line.split(":")[1:]).strip()
+                            self.category_entry.delete(0, tk.END)
+                            self.category_entry.insert(0, to_insert)
                         elif "Tags:" in line:
-                            self.tags_entry.insert(0," ".join(line.split(":")[1:]).strip())
+                            to_insert = " ".join(line.split(":")[1:]).strip()
+                            self.tags_entry.insert(0, to_insert)
                         elif "Summary:" in line:
-                            self.summary_entry.insert(0," ".join(line.split(":")[1:]).strip())
+                            to_insert = " ".join(line.split(":")[1:]).strip()
+                            self.summary_entry.insert(0, to_insert)
                         elif "Slug:" in line or "Author:" in line:
                             continue
                         else:
-                            self.body_entry.insert(tk.END,line)
+                            self.body_entry.insert(tk.END, line)
                 print self.draft
-        else :
+        else:
             print "set pelican home first"
 
     def open_draft(self):
@@ -99,8 +105,11 @@ class MainApplication(tk.Frame):
         """
         Prepare title for slug
         """
-        return title.strip().replace(" ", "-").replace("'", "-").replace(":", "-").lower()
-
+        title = title.strip()
+        title = title.replace(" ", "-")
+        title = title.replace("'", "-")
+        title = title.replace(":", "-")
+        return title.lower()
 
     def save_file(self, path):
         """
@@ -115,7 +124,9 @@ class MainApplication(tk.Frame):
         body = self.body_entry.get(1.0, tk.END).strip()
         author = getpass.getuser()
         slug = self.clean_title(title)
-        f = tkFileDialog.asksaveasfile(mode='w', defaultextension=".md", initialdir=path)
+        f = tkFileDialog.asksaveasfile(mode='w',
+                                       defaultextension=".md",
+                                       initialdir=path)
         if f is None:
             return
         text_to_save = u"""Title: {0}
@@ -128,17 +139,16 @@ Summary: {6}
 {7}
 """.format(title, date, categories, tags, author, slug, summary, body)
         f.write(text_to_save)
+        name = f.name
         f.close()
-        return f
-
+        return name
 
     def save_draft(self):
-        f= self.save_file(self.draft_directory)
+        f = self.save_file(self.draft_directory)
         draft_file = f.name
         if os.path.exists(draft_file):
             pub_file = draft_file.replace('draft', 'content')
             os.rename(pub_file, draft_file)
-
 
     def save_published(self):
         f = self.save_file(self.publish_directory)
@@ -148,7 +158,6 @@ Summary: {6}
             draft_file = pub_file.replace('content', 'draft')
             os.rename(draft_file, pub_file)
 
-
     def go_live(self):
         os.chdir(self.path)
         subprocess.call(["make", "publish", "ssh_upload"])
@@ -157,7 +166,7 @@ Summary: {6}
         """
         Creation of the GUI is done here
         """
-        s=ttk.Style()
+        s = ttk.Style()
         s.theme_use('classic')
         tk.Frame.__init__(self, parent, *args, **kwargs)
         self.parent = parent
@@ -168,18 +177,32 @@ Summary: {6}
         self.grid(row=0, column=0, sticky=tk.N+tk.S+tk.E+tk.W)
         # menu configuration
         self.menu_bar = tk.Menu(self)
-        self.menu_bar.add_command(label="set pelican home", command=self.choose_pelican_path)
-        self.menu_bar.add_command(label="Quit", command=self.quit)
+        self.menu_bar.add_command(label="set pelican home",
+                                  command=self.choose_pelican_path)
+        self.menu_bar.add_command(label="Quit",
+                                  command=self.quit)
         self.parent.config(menu=self.menu_bar)
 
-        ## declare elements
+        # declare elements
         # buttons
-        self.new_article_button = tk.Button(self, text="new article", command=self.new_article)
-        self.open_draft_button = tk.Button(self, text="open Draft", command=self.open_draft)
-        self.open_published_button = tk.Button(self, text="Open published article", command=self.open_published)
-        self.save_draft_button = tk.Button(self, text="Save to draft", command=self.save_draft )
-        self.save_published_button = tk.Button(self, text="Ready to publish", command=self.save_published )
-        self.upload_button = tk.Button(self, text="Go online", command=self.go_live )
+        self.new_article_button = tk.Button(self,
+                                            text="new article",
+                                            command=self.new_article)
+        self.open_draft_button = tk.Button(self,
+                                           text="open Draft",
+                                           command=self.open_draft)
+        self.open_published_button = tk.Button(self,
+                                               text="Open published article",
+                                               command=self.open_published)
+        self.save_draft_button = tk.Button(self,
+                                           text="Save to draft",
+                                           command=self.save_draft)
+        self.save_published_button = tk.Button(self,
+                                               text="Ready to publish",
+                                               command=self.save_published)
+        self.upload_button = tk.Button(self,
+                                       text="Go online",
+                                       command=self.go_live)
         # labels and entrys
         self.title_label = tk.Label(self, text="Title")
         self.date_label = tk.Label(self, text="Date")
@@ -193,29 +216,75 @@ Summary: {6}
         self.category_entry = tk.Entry(self)
         self.tags_entry = tk.Entry(self)
         self.summary_entry = tk.Entry(self)
-        self.body_entry = ScrolledText.ScrolledText(self,wrap=tk.WORD)
+        self.body_entry = ScrolledText.ScrolledText(self, wrap=tk.WORD)
 
-        ## position elements on the grid
-        self.new_article_button.grid(column=0, row=0, sticky='W', pady=(20,20), padx=(20,0))
-        self.open_draft_button.grid(column=1, row=0 , pady=(20,20))
-        self.open_published_button.grid(column=2, row=0, sticky='E', pady=(20,20), padx=(0,20))
-        self.title_label.grid(column=0, row=1, sticky='W')
-        self.date_label.grid(column=0, row=2, sticky='W')
-        self.category_label.grid(column=0, row=3, sticky='W')
-        self.tags_label.grid(column=0, row=4, sticky='W')
-        self.summary_label.grid(column=0, row=5, sticky='W')
-        self.body_label.grid(column=0, row=6, sticky='W')
+        # position elements on the grid
+        self.new_article_button.grid(column=0,
+                                     row=0,
+                                     sticky='W',
+                                     pady=(20, 20),
+                                     padx=(20, 0))
+        self.open_draft_button.grid(column=1,
+                                    row=0,
+                                    pady=(20, 20))
+        self.open_published_button.grid(column=2,
+                                        row=0,
+                                        sticky='E',
+                                        pady=(20, 20),
+                                        padx=(0, 20))
+        self.title_label.grid(column=0,
+                              row=1,
+                              sticky='W')
+        self.date_label.grid(column=0,
+                             row=2,
+                             sticky='W')
+        self.category_label.grid(column=0,
+                                 row=3,
+                                 sticky='W')
+        self.tags_label.grid(column=0,
+                             row=4,
+                             sticky='W')
+        self.summary_label.grid(column=0,
+                                row=5,
+                                sticky='W')
+        self.body_label.grid(column=0,
+                             row=6,
+                             sticky='W')
 
-        self.title_entry.grid(column=1, row=1, sticky='WE')
-        self.date_entry.grid(column=1, row=2, sticky='WE')
-        self.category_entry.grid(column=1, row=3, sticky='WE')
-        self.tags_entry.grid(column=1, row=4, sticky='WE')
-        self.summary_entry.grid(column=1, row=5, sticky='WE')
-        self.body_entry.grid(column=1, row=6, columnspan=2, sticky='NSWE', padx=(0,50), pady=(0,50))
+        self.title_entry.grid(column=1,
+                              row=1,
+                              sticky='WE')
+        self.date_entry.grid(column=1,
+                             row=2,
+                             sticky='WE')
+        self.category_entry.grid(column=1,
+                                 row=3,
+                                 sticky='WE')
+        self.tags_entry.grid(column=1,
+                             row=4,
+                             sticky='WE')
+        self.summary_entry.grid(column=1,
+                                row=5,
+                                sticky='WE')
+        self.body_entry.grid(column=1,
+                             row=6,
+                             columnspan=2,
+                             sticky='NSWE',
+                             padx=(0, 50),
+                             pady=(0, 50))
 
-        self.save_draft_button.grid(column=0, row=7, sticky=tk.W, pady=(20,20), padx=(20,0))
-        self.save_published_button.grid(column=1, row=7, pady=(20,20))
-        self.upload_button.grid(column=2, row=7, pady=(20,20), padx=(0,20))
+        self.save_draft_button.grid(column=0,
+                                    row=7,
+                                    sticky=tk.W,
+                                    pady=(20, 20),
+                                    padx=(20, 0))
+        self.save_published_button.grid(column=1,
+                                        row=7,
+                                        pady=(20, 20))
+        self.upload_button.grid(column=2,
+                                row=7,
+                                pady=(20, 20),
+                                padx=(0, 20))
 
         # manage horizontal and vertical resizing
         self.columnconfigure(1, weight=3)
@@ -223,13 +292,6 @@ Summary: {6}
 
         self.update()
 
-
-
-    def flush(self):
-        """
-        for test only
-        """
-        pass
 
 if __name__ == "__main__":
     root = tk.Tk()
