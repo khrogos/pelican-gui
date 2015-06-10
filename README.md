@@ -7,6 +7,6 @@ also add a draft folder to pelican home. So you can work on draft/ on multiples 
 
     git clone https://github.com/khrogos/pelican-gui.git
     cd pelican-gui/
-    pip install -r requierements.txt
+    pip install -r requirements.txt
 
 
